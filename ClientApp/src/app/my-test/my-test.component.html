@@ -1,0 +1,13 @@
+<input required minlength="3"
+       [(ngModel)]="hero.name" #hiroName="ngModel">
+
+<div *ngIf="hiroName.invalid && (hiroName.dirty || hiroName.touched)">
+  <div class="text-danger" *ngIf="hiroName.errors?.['required']">
+    پر کردن این فیلد الزامی می‌باشد
+  </div>
+  <div class="text-danger" *ngIf="hiroName.errors?.['minlength']">
+    تعداد کاراکتر ها نمیتواند از 2 کاراکتر کمتر باشد
+  </div>
+</div>
+
+<button [disabled]="hiroName.invalid">Submit</button>

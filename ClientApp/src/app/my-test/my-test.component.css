@@ -1,0 +1,8 @@
+
+.ng-valid {
+  background: #42A948; /* green */
+}
+
+.ng-invalid {
+  background: #a94442; /* red */
+}

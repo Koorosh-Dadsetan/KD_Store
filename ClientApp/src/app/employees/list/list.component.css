@@ -1,0 +1,19 @@
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  direction: ltr !important;
+}
+
+  .pagination a {
+    color: black;
+  }
+
+    .pagination a.active {
+      background-color: dodgerblue;
+      color: white;
+    }
+
+    .pagination a:hover:not(.active) {
+      background-color: #ddd;
+    }
