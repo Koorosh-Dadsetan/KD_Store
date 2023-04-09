@@ -25,7 +25,7 @@ export class EditComponent implements OnInit {
       const id = params.get("id");
 
       if (id) {
-        this.httpService.getEmployeeById(id).subscribe((employees) => {
+        this.httpService.getEmployeeById(+id).subscribe((employees) => {
           this.employee = employees;
         });
       }

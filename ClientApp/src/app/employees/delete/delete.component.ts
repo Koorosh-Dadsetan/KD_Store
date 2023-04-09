@@ -19,7 +19,7 @@ export class DeleteComponent implements OnInit {
       const id = params.get("id");
 
       if (id) {
-        this.httpService.getEmployeeById(id).subscribe((employee) => {
+        this.httpService.getEmployeeById(+id).subscribe((employee) => {
           this.employee = employee;
         });
       }

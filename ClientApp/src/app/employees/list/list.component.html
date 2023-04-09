@@ -1,9 +1,19 @@
 
+<form (submit)="search()">
+    <input name="searchText" [(ngModel)]="searchText" />
+    <input type="submit" value="جستوجو" />
+</form>
+
 <h1 class="text-center">به پروژه تست من خوش آمدید</h1>
 
-<a class="text-bold" routerLink="create">افزودن</a>
+<a class="btn btn-light btn-outline-dark" routerLink="create">افزودن</a>
+<a *ngIf="employees.length>0" class="btn btn-light btn-outline-dark" href="https://localhost:7279/api/employees/ExportExcel">دانلود فایل Excel</a>
+<a *ngIf="employees.length>0" class="btn btn-light btn-outline-dark" href="https://localhost:7279/api/employees/ExportPDF">دانلود فایل PDF</a>
 
-<table class="table" *ngIf="employees.length>0;else dataEmpty">
+<br />
+<br />
+
+<table id="myTBL" class="table" *ngIf="employees.length>0;else dataEmpty">
     <thead>
         <tr>
             <th>
@@ -36,9 +46,9 @@
                 {{ employee.address }}
             </td>
             <td>
-                <a [routerLink]="[employee.id]">جزئیات</a> |
-                <a [routerLink]="['edit/' + employee.id]">ویرایش</a> |
-                <a [routerLink]="['delete/' + employee.id]">حذف</a>
+                <a class="btn btn-info" [routerLink]="[employee.id]">جزئیات</a>
+                <a class="btn btn-warning" [routerLink]="['edit/' + employee.id]">ویرایش</a>
+                <a class="btn btn-danger" [routerLink]="['delete/' + employee.id]">حذف</a>
             </td>
         </tr>
     </tbody>

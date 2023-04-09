@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using KD_Store;
 using KD_Store.Models;
+using ClosedXML.Excel;
+using SelectPdf;
 
 namespace KD_Store.Controllers
 {
@@ -14,18 +10,32 @@ namespace KD_Store.Controllers
     //[Route("api/[controller]")]
     public class EmployeesController : Controller
     {
-        private readonly DBCtx _context;
+        private readonly TestDbContext _context;
 
-        public EmployeesController(DBCtx context)
+        public EmployeesController(TestDbContext context)
         {
             _context = context;
         }
+
+        public IEnumerable<Employee>? employee { get; set; } = default!;
 
         // GET: api/Employees
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             return Ok(await _context.Employees.ToListAsync());
+        }
+
+        // GET: api/Employees/Search/Text
+        [HttpGet]
+        public async Task<IActionResult> Search([FromRoute] string id)
+        {
+            List<Employee> data =
+                await _context.Employees
+                .Where(x => x.FullName.Contains(id) || x.Mobile.Contains(id))
+                .ToListAsync();
+
+            return Ok(data);
         }
 
         // GET: api/Employees/GetEmployee/5
@@ -89,6 +99,79 @@ namespace KD_Store.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public FileResult ExportExcel()
+        {
+            if (_context.Employees != null)
+            {
+                employee = _context.Employees.AsEnumerable();
+            }
+
+            using (XLWorkbook workbook = new XLWorkbook { RightToLeft = true })
+            {
+                var worksheet = workbook.Worksheets.Add("Employees Sheet");
+                var currentRow = 1;
+                worksheet.Cell(currentRow, 1).Value = "ردیف";
+                worksheet.Cell(currentRow, 2).Value = "نام و نام خانوادگی";
+                worksheet.Cell(currentRow, 3).Value = "موبایل";
+                worksheet.Cell(currentRow, 4).Value = "سن";
+                worksheet.Cell(currentRow, 5).Value = "آدرس";
+
+                foreach (var item in employee)
+                {
+                    currentRow++;
+                    worksheet.Cell(currentRow, 1).Value = item.Id;
+                    worksheet.Cell(currentRow, 2).Value = item.FullName;
+                    worksheet.Cell(currentRow, 3).Value = item.Mobile;
+                    worksheet.Cell(currentRow, 4).Value = item.Age;
+                    worksheet.Cell(currentRow, 5).Value = item.Address;
+                }
+
+                var myCustomStyle = XLWorkbook.DefaultStyle;
+                myCustomStyle.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                myCustomStyle.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                worksheet.RangeUsed(XLCellsUsedOptions.AllContents).Style = myCustomStyle;
+
+                worksheet.Column(1).AdjustToContents();
+                worksheet.Column(2).AdjustToContents();
+                worksheet.Column(3).AdjustToContents();
+                worksheet.Column(4).AdjustToContents();
+                worksheet.Column(5).AdjustToContents();
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Employees.xlsx");
+                }
+            }
+        }
+
+        [HttpGet]
+        public FileResult ExportPDF()
+        {
+            string htmlString = "<html><body><h1>Koorosh Dadsetan</h1></body></html>";
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                HtmlToPdf converter = new HtmlToPdf();
+
+                converter.Options.PdfPageSize = PdfPageSize.A4;
+                converter.Options.PdfPageOrientation = PdfPageOrientation.Landscape;
+                converter.Options.AutoFitWidth = HtmlToPdfPageFitMode.AutoFit;
+                converter.Options.AutoFitHeight = HtmlToPdfPageFitMode.AutoFit;
+
+                PdfDocument doc = converter.ConvertHtmlString(htmlString);
+
+                //PdfDocument doc = converter.ConvertUrl("https://localhost:44485/employees");
+
+                doc.Save(stream);
+                doc.Close();
+
+                return File(stream.ToArray(), "application/pdf", "Employees.pdf");
+            }
         }
     }
 }

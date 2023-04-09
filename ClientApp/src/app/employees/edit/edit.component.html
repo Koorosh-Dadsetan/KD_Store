@@ -9,7 +9,7 @@
                 <input class="form-control" [ngClass]="employeeFullName.invalid && (employeeFullName.dirty || employeeFullName.touched || submitClicked) ? 'border-danger' : ''" style="text-align:right" required name="fullName" [(ngModel)]="employee.fullName" #employeeFullName="ngModel" dir="rtl" />
 
                 <div *ngIf="employeeFullName.invalid && (employeeFullName.dirty || employeeFullName.touched || submitClicked)">
-                    <small class="text-validator" *ngIf="employeeFullName.errors?.['required']">
+                    <small class="text-danger" *ngIf="employeeFullName.errors?.['required']">
                         پر کردن این فیلد الزامی می‌باشد
                     </small>
                 </div>
@@ -19,10 +19,10 @@
                 <input class="form-control" [ngClass]="employeeMobile.invalid && (employeeMobile.dirty || employeeMobile.touched || submitClicked) ? 'border-danger' : ''" pattern="^(0|([+][1-9]{2}))[0-9]{10}$" required maxlength="11" name="mobile" [(ngModel)]="employee.mobile" #employeeMobile="ngModel" dir="ltr" />
 
                 <div *ngIf="employeeMobile.invalid && (employeeMobile.dirty || employeeMobile.touched || submitClicked)">
-                    <small class="text-validator" *ngIf="employeeMobile.errors?.['required']">
+                    <small class="text-danger" *ngIf="employeeMobile.errors?.['required']">
                         پر کردن این فیلد الزامی می‌باشد
                     </small>
-                    <small class="text-validator" *ngIf="employeeMobile.errors?.['pattern']">
+                    <small class="text-danger" *ngIf="employeeMobile.errors?.['pattern']">
                         لطفا شماره تماس را به صورت صحیح وارد نمائید
                     </small>
                 </div>

@@ -19,8 +19,12 @@ export class HttpService {
     return this.http.get<Employee[]>(this.baseApiUrl + '/api/employees');
   }
 
-  getEmployeeById(id: string): Observable<Employee> {
-    return this.http.get<Employee>(this.baseApiUrl + '/api/employees/GetEmployee/' + id);
+  searchEmployees(text: string): Observable<Employee[]> {
+    return this.http.get<Employee[]>(this.baseApiUrl + '/api/employees/search/' + text);
+  }
+
+  getEmployeeById(id: number): Observable<Employee> {
+    return this.http.get<Employee>(this.baseApiUrl + '/api/employees/getEmployee/' + id);
   }
 
   createEmployee(addEmployee: Employee): Observable<Employee> {
@@ -32,6 +36,6 @@ export class HttpService {
   }
 
   deleteEmployee(id: number): Observable<Employee> {
-    return this.http.post<Employee>(this.baseApiUrl + '/api/employees/delete/', id);
+    return this.http.post<Employee>(this.baseApiUrl + '/api/employees/delete', id);
   }
 }

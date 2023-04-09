@@ -1,4 +1,25 @@
 
+table {
+  font-family: arial, sans-serif;
+  width: 100%;
+  box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+}
+
+thead {
+  background-color: #6c7ae0;
+  color: #fff;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: center;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #f8f6ff;
+}
+
 .pagination {
   display: flex;
   justify-content: center;
